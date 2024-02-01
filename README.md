@@ -26,7 +26,7 @@ Using the example files:
 
 This will hide the file HideFile.txt in the music file Waves.mp3
 
-The server URL that Waves.mp3 will now be streamed on will be displayed. Open this URL in a web browser to listen to this music file. The client program will need to be given this URL to extract the hidden file.
+The server URL that Waves.mp3 will now be streamed on will be displayed. Open this URL in a web browser to listen to this music file - note that the stream is http based, so any browser warnings about lack of https security can be ignored. The client program will need to be given this URL to extract the hidden file.
 
 Press CTRL+C or kill the stegstream-server process to stop streaming.
 
