@@ -10,6 +10,8 @@ Installation
 
 Download the archive file containing the server executable for the relevant operating system from the releases. Validate the PGP signature if an integrity check is advisable, and extract the executable from the archive file. Place the executable in a suitable directory; E.G /home/username/stegstream
 
+GnuPG Signing Key: http://pgp.mit.edu/pks/lookup?op=get&search=0x203092F792253A6F
+
 Setting up a server
 
 Open a command prompt, and cd into the directory containing the server executable.
