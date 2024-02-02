@@ -228,9 +228,6 @@ func Steg(_containerFile string, _hideFile string) bool {
 																if containerFileWriteError == true {
 																	// Container file written to with errors
 																	fmt.Println(fmt.Sprintf(UI_FileWriteError, _containerFile, ""))
-																} else {
-																	// Container file written to ok
-																	//fmt.Println(fmt.Sprintf(UI_BytesWritten, containerFileBytesWritten))
 																}
 															}
 														}
