@@ -39,6 +39,7 @@ const (
 	UI_HideFileDone          = "\rDone               \n"
 	UI_WaitingForShutdown    = `Waiting for shutdown`
 	UI_ShutdownSignal        = `Shutdown signal detected`
+	UI_ShuttingDown          = `Shutting down`
 	UI_CtrlCToExit           = `Press CTRL+C or kill stegstream-server process to exit`
 	UI_HiddenFileData        = `Hidden file data:
 Spacing: %v

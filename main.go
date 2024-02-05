@@ -106,6 +106,7 @@ func WaitForShutdown() {
 	go func() {
 		<-killChannel
 		shutdown = true
+		fmt.Println(UI_ShuttingDown)
 	}()
 
 	// Loop until shutdown flag set
