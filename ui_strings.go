@@ -48,9 +48,9 @@ File name: %s`
 
 Arguments: 
 
-stegstream-server <container file> <file to hide>
+./stegstream-server <container file> <file to hide>
 
 Example:
 
-stegstream-server Waves.mp3 HideFile.txt`
+./stegstream-server Waves.mp3 HideFile.txt`
 )
