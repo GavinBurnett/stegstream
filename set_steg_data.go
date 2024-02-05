@@ -151,7 +151,7 @@ func Steg(_containerFile string, _hideFile string) bool {
 
 																if UPDATE_UI == true {
 																	// Update UI
-																	fmt.Printf("\r" + UI_HidingFile + ".  ")
+																	fmt.Printf("\r" + fmt.Sprintf(UI_HiddenDataWriting, _hideFile, _containerFile) + ".  ")
 																}
 
 																// Get a byte from the buffer
@@ -171,7 +171,7 @@ func Steg(_containerFile string, _hideFile string) bool {
 
 																if UPDATE_UI == true {
 																	// Update UI
-																	fmt.Printf("\r" + UI_HidingFile + ".. ")
+																	fmt.Printf("\r" + fmt.Sprintf(UI_HiddenDataWriting, _hideFile, _containerFile) + ".. ")
 																}
 
 																if err != nil {
@@ -219,7 +219,7 @@ func Steg(_containerFile string, _hideFile string) bool {
 
 																if UPDATE_UI == true {
 																	// Update UI
-																	fmt.Printf("\r" + UI_HidingFile + "...")
+																	fmt.Printf("\r" + fmt.Sprintf(UI_HiddenDataWriting, _hideFile, _containerFile) + "...")
 																}
 
 															} // end byte at a time for loop
@@ -253,7 +253,7 @@ func Steg(_containerFile string, _hideFile string) bool {
 
 												if UPDATE_UI == true {
 													// Update UI
-													fmt.Printf(UI_HideFileDone)
+													fmt.Printf("\r")
 												}
 
 											} else {

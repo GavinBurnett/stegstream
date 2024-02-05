@@ -34,9 +34,8 @@ const (
 	UI_Arguments             = `Arguments: `
 	UI_FileFound             = `File found: %s`
 	UI_Parameter             = `Parameters: %s`
+	UI_HiddenDataWriting     = `Hiding file: %s in container file: %s `
 	UI_HiddenDataWrittenOK   = `Hidden file: %s written into container file: %s successfully`
-	UI_HidingFile            = `Hiding file`
-	UI_HideFileDone          = "\rDone               \n"
 	UI_WaitingForShutdown    = `Waiting for shutdown`
 	UI_ShutdownSignal        = `Shutdown signal detected`
 	UI_ShuttingDown          = `Shutting down`
