@@ -18,7 +18,7 @@ Open a command prompt, and cd into the directory containing the server executabl
 
 Enter the following:
 
-./stegstream-server <container file> <file to hide>
+./stegstream-server container file file to hide
 
 Using the example files:
 
