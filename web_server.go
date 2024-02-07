@@ -76,6 +76,10 @@ func StartWebServer(_fileToServe string, _wait *sync.WaitGroup) {
 
 			if err != nil {
 				fmt.Println(fmt.Sprintf(UI_WebServerError, err, ""))
+
+				// Signal calling method that web server start has failed
+				_wait.Done()
+
 				ServerUp = false
 			}
 		}
