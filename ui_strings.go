@@ -15,6 +15,7 @@ const (
 	UI_WebServerNotStarted   = `ERROR: Web Server failed to start`
 	UI_NoBufferMemory        = `ERROR: Failed to allocate buffer memory`
 	UI_FileOpenError         = `ERROR: File open error: `
+	UI_FileDeleteError       = `ERROR: File delete error: `
 	UI_FileNameTooLong       = `ERROR: File name %s too long. Maximum %v characters`
 	UI_SpacingError          = `ERROR: File to hide: %s will not fit inside: %s`
 	UI_SeekFail              = `ERROR: File: %s seek to: %v failed. %s`
@@ -33,6 +34,11 @@ const (
 	UI_ServingFile           = `Serving File: %s`
 	UI_Arguments             = `Arguments: `
 	UI_FileFound             = `File found: %s`
+	UI_CreatingFile          = `Creating file: `
+	UI_Done                  = ` - Done.`
+	UI_FileCreateError       = `ERROR: Failed to create file: `
+	UI_RandomDataError       = `ERROR: Random data not generated`
+	UI_RandomNumberError     = `ERROR: Random number not generated`
 	UI_Parameter             = `Parameters: %s`
 	UI_HiddenDataWriting     = `Hiding file: %s in container file: %s `
 	UI_HiddenDataWrittenOK   = `Hidden file: %s written into container file: %s successfully`
