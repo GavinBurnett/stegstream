@@ -13,14 +13,16 @@ import (
 // Main: program entry point
 func main() {
 
-	exitCode := 0
+	var configData Config = Config{DEFAULT_PORT}
+	var configDataValid bool = false
 	var waitWebServer sync.WaitGroup
+	exitCode := 0
 
 	// Hardcode command line arguments for testing
 	// testArgs := []string{"", "", ""}
 	// testArgs[0] = "./stegstream-server"
-	// testArgs[1] = "/data/go/src/stegstream_files/Waves.mp3"
-	// testArgs[2] = "/data/go/src/stegstream_files/Burning Chrome.txt"
+	// testArgs[1] = "/home/gkb/go/stegstream_files/Waves.mp3"
+	// testArgs[2] = "/home/gkb/go/stegstream_files/Burning Chrome.txt"
 	// os.Args = testArgs
 
 	if os.Args != nil {
@@ -45,32 +47,52 @@ func main() {
 		}
 		if len(os.Args) == 3 {
 
-			// Hide file to hide inside container file
-			if Steg(os.Args[1], os.Args[2]) == true {
+			// Check if config file is present
+			if FileExists(CONFIG_FILE) {
+				// Config file found - use the settings in it
+				fmt.Println(UI_ConfigFileFound)
+				configData = ReadConfigFile(CONFIG_FILE)
+			}
+			// Config file not found - use default settings
 
-				fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenOK, os.Args[2], os.Args[1]))
+			// Check config is valid and correct any errors if possible
+			configData, configDataValid = CheckConfigFile(configData)
 
-				// Start web server
-				waitWebServer.Add(1)
-				//go StartWebServer(testArgs[1], &waitWebServer)
-				go StartWebServer(os.Args[1], &waitWebServer)
-				waitWebServer.Wait()
+			if configDataValid == false {
+				exitCode = 1
+				fmt.Println(UI_ConfigInvalid)
+			} else {
 
-				if ServerUp == true {
+				if DEBUG == true {
+					fmt.Println(UI_Config, configData)
+				}
 
-					// Web server started - listen for shutdown signal
-					fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
-					fmt.Println(UI_CtrlCToExit)
-					WaitForShutdown()
+				// Hide file to hide inside container file
+				if Steg(os.Args[1], os.Args[2]) == true {
+
+					fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenOK, os.Args[2], os.Args[1]))
+
+					// Start web server
+					waitWebServer.Add(1)
+					go StartWebServer(os.Args[1], configData, &waitWebServer)
+					waitWebServer.Wait()
+
+					if ServerUp == true {
+
+						// Web server started - listen for shutdown signal
+						fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
+						fmt.Println(UI_CtrlCToExit)
+						WaitForShutdown()
+
+					} else {
+						exitCode = 1
+						fmt.Println(UI_WebServerNotStarted)
+					}
 
 				} else {
 					exitCode = 1
-					fmt.Println(UI_WebServerNotStarted)
+					fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenFail, os.Args[2], os.Args[1]))
 				}
-
-			} else {
-				exitCode = 1
-				fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenFail, os.Args[2], os.Args[1]))
 			}
 		}
 		if len(os.Args) > 3 {

@@ -27,9 +27,8 @@ func ServeFile(w http.ResponseWriter, r *http.Request) {
 }
 
 // StartWebServer: Start web server and listen for connections
-func StartWebServer(_fileToServe string, _wait *sync.WaitGroup) {
+func StartWebServer(_fileToServe string, _configData Config, _wait *sync.WaitGroup) {
 
-	var port int = 8080
 	var hostname string = ""
 	var serverHostname string = ""
 	var fileType string = "/Audio"
@@ -47,7 +46,7 @@ func StartWebServer(_fileToServe string, _wait *sync.WaitGroup) {
 		} else {
 
 			// Set hostname name and port
-			serverHostname = hostname + ":" + strconv.Itoa(port)
+			serverHostname = hostname + ":" + strconv.Itoa(_configData.Port)
 
 			// Set file to serve and web server url
 			FileToServe = _fileToServe

@@ -37,3 +37,16 @@ The hidden file is stored in the music file as plaintext. If additional security
 The hidden and music files are left on disk after the server program has shut down. It is the responsibility of the user to delete these files if secrecy is important.
 
 The larger the hidden file in relation to the music file, the more audible distortions will be noticed on streaming playback. The limit for a hidden file is 10% of the size of the music file, as this limit keeps the distortions to an acceptable level. If the hidden file is large, a large music file will be needed.
+
+Usage of configuration file
+
+Placing a file named StegstreamServerConfig.txt in the same directory as the executable allows changes to made to the server configuration.
+
+It is possible to change the following:
+
+The port number the server listens on:
+Port=8080
+
+Any lines in the configuration file that start with a # character will be ignored.
+
+See the release files for example configuration files.
