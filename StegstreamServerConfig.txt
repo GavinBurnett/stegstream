@@ -3,3 +3,5 @@
 # Set port for server to listen on
 Port=8080
 #
+# Set to stream the audio with no hidden data
+StreamOnly=false

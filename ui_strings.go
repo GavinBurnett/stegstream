@@ -28,6 +28,7 @@ const (
 	UI_RandomNumberError     = `ERROR: Random number not generated`
 	UI_ParseError            = `ERROR: Parse failed: `
 	UI_ConfigInvalid         = `ERROR: Config invalid`
+	UI_UsingDefault          = `Using default setting: `
 	UI_ConfigFileFound       = `Config file found - using settings`
 	UI_ReadingConfigFile     = `Reading config file: `
 	UI_Config                = `Config: `

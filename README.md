@@ -45,7 +45,12 @@ Placing a file named StegstreamServerConfig.txt in the same directory as the exe
 It is possible to change the following:
 
 The port number the server listens on:
+
 Port=8080
+
+Stream the music without hiding the hidden file in it:
+
+StreamOnly=false
 
 Any lines in the configuration file that start with a # character will be ignored.
 

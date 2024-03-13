@@ -8,7 +8,7 @@ import (
 func TestReadConfigFile(t *testing.T) {
 
 	// Set up test data
-	var configData Config = Config{DEFAULT_PORT}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
 
 	// The tests to run
 	var tests = []struct {
@@ -32,9 +32,9 @@ func TestReadConfigFile(t *testing.T) {
 			result := ReadConfigFile(currentTest.input)
 
 			if result != currentTest.expectedResult {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %d Expected: %d", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %v Expected: %v", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
 			} else {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %d Expected: %d", currentTest.input, result, currentTest.expectedResult) + " - PASS")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %v Expected: %v", currentTest.input, result, currentTest.expectedResult) + " - PASS")
 			}
 		})
 	}
@@ -43,9 +43,9 @@ func TestReadConfigFile(t *testing.T) {
 func TestCheckConfigFile(t *testing.T) {
 
 	// Set up test data
-	var defaultData Config = Config{DEFAULT_PORT}
-	var portChanged Config = Config{8181}
-	var invalidPort Config = Config{-1}
+	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
+	var portChanged Config = Config{8181, false}
+	var invalidPort Config = Config{-1, false}
 
 	// The tests to run
 	var tests = []struct {
@@ -70,9 +70,9 @@ func TestCheckConfigFile(t *testing.T) {
 			resultConfig, resultBoolean := CheckConfigFile(currentTest.input)
 
 			if resultConfig != currentTest.expectedConfig && resultBoolean != currentTest.expectedBoolean {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig, resultBoolean, currentTest.expectedConfig, currentTest.expectedBoolean) + " - FAIL")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig.Port, resultBoolean, currentTest.expectedConfig.Port, currentTest.expectedBoolean) + " - FAIL")
 			} else {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig, resultBoolean, currentTest.expectedConfig, currentTest.expectedBoolean) + " - PASS")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig.Port, resultBoolean, currentTest.expectedConfig.Port, currentTest.expectedBoolean) + " - PASS")
 			}
 		})
 	}
@@ -110,6 +110,45 @@ func TestParseStringToInt(t *testing.T) {
 				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %d Expected: %d", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
 			} else {
 				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %d Expected: %d", currentTest.input, result, currentTest.expectedResult) + " - PASS")
+			}
+		})
+	}
+}
+
+func TestParseStringToBool(t *testing.T) {
+
+	// The tests to run
+	var tests = []struct {
+		name           string
+		input          string
+		expectedResult bool
+	}{
+		{"NoParameterData", "", false},
+		{"InvalidData1", "invalidData", false},
+		{"InvalidData2", "34e", false},
+		{"MinusNumber", "-4", false},
+		{"ZeroNumber", "0", false},
+		{"OneNumber", "1", true},
+		{"LowerCaseTrue", "true", true},
+		{"UpperCaseTrue", "TRUE", true},
+		{"LowerCaseFalse", "false", false},
+		{"UpperCaseFalse", "FALSE", false},
+	}
+
+	// Write name of function being tested to test results file
+	LogResult("ParseStringToBool")
+
+	// Run the tests
+	for _, currentTest := range tests {
+		testname := fmt.Sprintf("%s", currentTest.name)
+		t.Run(testname, func(t *testing.T) {
+
+			result := ParseStringToBool(currentTest.input)
+
+			if result != currentTest.expectedResult {
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %t Expected: %t", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
+			} else {
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %t Expected: %t", currentTest.input, result, currentTest.expectedResult) + " - PASS")
 			}
 		})
 	}

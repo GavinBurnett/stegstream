@@ -11,7 +11,8 @@ import (
 
 // Config file data
 type Config struct {
-	Port int // Port number
+	Port       int  // Port number
+	StreamOnly bool // Stream with no hidden data
 }
 
 // Config file strings
@@ -19,11 +20,12 @@ const LINE_COMMENT = "#"
 const LINE_CONFIG_ENTRY = "="
 
 const PORT_CONFIG = "Port"
+const STREAM_ONLY_CONFIG = "StreamOnly"
 
 // ReadConfigFile: Read config file data
 func ReadConfigFile(_configFile string) Config {
 
-	var configData Config = Config{DEFAULT_PORT}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
 	var configFile *os.File
 	var configFileReader *bufio.Scanner
 	var err error
@@ -72,6 +74,11 @@ func ReadConfigFile(_configFile string) Config {
 								// Get Port number
 								if strings.Contains(configFileReader.Text(), PORT_CONFIG) {
 									configData.Port = ParseStringToInt(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
+								}
+
+								// Get stream only
+								if strings.Contains(configFileReader.Text(), STREAM_ONLY_CONFIG) {
+									configData.StreamOnly = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
 								}
 
 							}
@@ -140,22 +147,49 @@ func ParseStringToInt(_inputString string) int {
 
 				if outputInt < 0 || outputInt > math.MaxInt {
 					fmt.Println(UI_ParseError, _inputString)
+					fmt.Println(UI_UsingDefault, "-1")
 					outputInt = -1
 				}
 			} else {
 				fmt.Println(UI_ParseError, _inputString)
+				fmt.Println(UI_UsingDefault, "-1")
 				outputInt = -1
 			}
 
 		} else {
 			fmt.Println(UI_ParseError, _inputString)
+			fmt.Println(UI_UsingDefault, "-1")
 			outputInt = -1
 		}
 
 	} else {
 		fmt.Println(UI_ParseError, GetFunctionName(), _inputString)
+		fmt.Println(UI_UsingDefault, "-1")
 		outputInt = -1
 	}
 
 	return outputInt
+}
+
+// ParseStringToBool: Converts given string into a bool
+func ParseStringToBool(_inputString string) bool {
+
+	var parsedBool bool = false
+	var parseErr error
+
+	if len(_inputString) > 0 {
+
+		parsedBool, parseErr = strconv.ParseBool(_inputString)
+
+		if parseErr != nil {
+			fmt.Println(UI_ParseError, _inputString)
+			fmt.Println(UI_UsingDefault, "false")
+		}
+
+	} else {
+		fmt.Println(UI_ParseError, GetFunctionName(), _inputString)
+		fmt.Println(UI_UsingDefault, "false")
+	}
+
+	return parsedBool
 }

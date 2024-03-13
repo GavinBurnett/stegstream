@@ -13,8 +13,9 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
 	var configDataValid bool = false
+	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
 	exitCode := 0
 
@@ -59,6 +60,7 @@ func main() {
 			configData, configDataValid = CheckConfigFile(configData)
 
 			if configDataValid == false {
+				// Config data not valid
 				exitCode = 1
 				fmt.Println(UI_ConfigInvalid)
 			} else {
@@ -67,26 +69,43 @@ func main() {
 					fmt.Println(UI_Config, configData)
 				}
 
-				// Hide file to hide inside container file
-				if Steg(os.Args[1], os.Args[2]) == true {
+				// If stream only config setting is false
+				if configData.StreamOnly == false {
 
-					fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenOK, os.Args[2], os.Args[1]))
+					// Hide file to hide inside container file
+					stegOK = Steg(os.Args[1], os.Args[2])
 
-					// Start web server
-					waitWebServer.Add(1)
-					go StartWebServer(os.Args[1], configData, &waitWebServer)
-					waitWebServer.Wait()
+					if stegOK == true {
+						fmt.Println(fmt.Sprintf(UI_HiddenDataWrittenOK, os.Args[2], os.Args[1]))
+					}
+				}
 
-					if ServerUp == true {
+				// If file to hide has been hidden ok, or stream only setting is true
+				if stegOK == true || configData.StreamOnly == true {
 
-						// Web server started - listen for shutdown signal
-						fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
-						fmt.Println(UI_CtrlCToExit)
-						WaitForShutdown()
+					// If container file exists
+					if FileExists(os.Args[1]) {
+
+						// Start web server
+						waitWebServer.Add(1)
+						go StartWebServer(os.Args[1], configData, &waitWebServer)
+						waitWebServer.Wait()
+
+						if ServerUp == true {
+
+							// Web server started - listen for shutdown signal
+							fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
+							fmt.Println(UI_CtrlCToExit)
+							WaitForShutdown()
+
+						} else {
+							exitCode = 1
+							fmt.Println(UI_WebServerNotStarted)
+						}
 
 					} else {
 						exitCode = 1
-						fmt.Println(UI_WebServerNotStarted)
+						fmt.Println(UI_FileNotFound, os.Args[1])
 					}
 
 				} else {
