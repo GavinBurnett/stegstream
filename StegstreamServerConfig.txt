@@ -5,3 +5,6 @@ Port=8080
 #
 # Set to stream the audio with no hidden data
 StreamOnly=false
+
+# Set to hide the file and not start the server
+HideOnly=false

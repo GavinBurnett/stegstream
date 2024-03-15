@@ -18,7 +18,7 @@ Open a command prompt, and cd into the directory containing the server executabl
 
 Enter the following:
 
-./stegstream-server container file file to hide
+./stegstream-server <container file> <file to hide>
 
 Using the example files:
 
@@ -50,7 +50,7 @@ Port=8080
 
 Stream the music without hiding the hidden file in it:
 
-StreamOnly=false
+StreamOnly=true
 
 Any lines in the configuration file that start with a # character will be ignored.
 

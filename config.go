@@ -13,6 +13,7 @@ import (
 type Config struct {
 	Port       int  // Port number
 	StreamOnly bool // Stream with no hidden data
+	HideOnly   bool // Hide the file with no streaming server
 }
 
 // Config file strings
@@ -21,11 +22,12 @@ const LINE_CONFIG_ENTRY = "="
 
 const PORT_CONFIG = "Port"
 const STREAM_ONLY_CONFIG = "StreamOnly"
+const HIDE_ONLY_CONFIG = "HideOnly"
 
 // ReadConfigFile: Read config file data
 func ReadConfigFile(_configFile string) Config {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
 	var configFile *os.File
 	var configFileReader *bufio.Scanner
 	var err error
@@ -81,6 +83,11 @@ func ReadConfigFile(_configFile string) Config {
 									configData.StreamOnly = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
 								}
 
+								// Get hide file only
+								if strings.Contains(configFileReader.Text(), HIDE_ONLY_CONFIG) {
+									configData.HideOnly = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
+								}
+
 							}
 						}
 					} else {
@@ -124,6 +131,12 @@ func CheckConfigFile(_config Config) (Config, bool) {
 	}
 
 	// Checks for entries that contradict each other - display any errors
+
+	// Check stream only and hide only are not both true
+	if _config.StreamOnly == true && _config.HideOnly == true {
+		fmt.Println(UI_StreamOnlyAndHideOnlySetError)
+		configDataValid = false
+	}
 
 	return _config, configDataValid
 }

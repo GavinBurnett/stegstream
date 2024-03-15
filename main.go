@@ -13,7 +13,7 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
 	var configDataValid bool = false
 	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
@@ -83,29 +83,33 @@ func main() {
 				// If file to hide has been hidden ok, or stream only setting is true
 				if stegOK == true || configData.StreamOnly == true {
 
-					// If container file exists
-					if FileExists(os.Args[1]) {
+					// Start web server if hide file only is false
+					if configData.HideOnly == false {
 
-						// Start web server
-						waitWebServer.Add(1)
-						go StartWebServer(os.Args[1], configData, &waitWebServer)
-						waitWebServer.Wait()
+						// If container file exists
+						if FileExists(os.Args[1]) {
 
-						if ServerUp == true {
+							// Start web server
+							waitWebServer.Add(1)
+							go StartWebServer(os.Args[1], configData, &waitWebServer)
+							waitWebServer.Wait()
 
-							// Web server started - listen for shutdown signal
-							fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
-							fmt.Println(UI_CtrlCToExit)
-							WaitForShutdown()
+							if ServerUp == true {
+
+								// Web server started - listen for shutdown signal
+								fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
+								fmt.Println(UI_CtrlCToExit)
+								WaitForShutdown()
+
+							} else {
+								exitCode = 1
+								fmt.Println(UI_WebServerNotStarted)
+							}
 
 						} else {
 							exitCode = 1
-							fmt.Println(UI_WebServerNotStarted)
+							fmt.Println(UI_FileNotFound, os.Args[1])
 						}
-
-					} else {
-						exitCode = 1
-						fmt.Println(UI_FileNotFound, os.Args[1])
 					}
 
 				} else {

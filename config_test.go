@@ -8,7 +8,7 @@ import (
 func TestReadConfigFile(t *testing.T) {
 
 	// Set up test data
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
 
 	// The tests to run
 	var tests = []struct {
@@ -43,9 +43,12 @@ func TestReadConfigFile(t *testing.T) {
 func TestCheckConfigFile(t *testing.T) {
 
 	// Set up test data
-	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY}
-	var portChanged Config = Config{8181, false}
-	var invalidPort Config = Config{-1, false}
+	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
+	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
+	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
+	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY}
+	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true}
+	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true}
 
 	// The tests to run
 	var tests = []struct {
@@ -57,6 +60,9 @@ func TestCheckConfigFile(t *testing.T) {
 		{"DefaultData", defaultData, defaultData, true},
 		{"PortChanged", portChanged, portChanged, true},
 		{"InvalidPort", invalidPort, defaultData, true},
+		{"streamOnlyOn", streamOnlyOn, streamOnlyOn, true},
+		{"hideOnlyOn", hideOnlyOn, hideOnlyOn, true},
+		{"streamOnlyHideOnlyBothOn", streamOnlyHideOnlyBothOn, streamOnlyHideOnlyBothOn, false},
 	}
 
 	// Write name of function being tested to test results file
@@ -70,9 +76,9 @@ func TestCheckConfigFile(t *testing.T) {
 			resultConfig, resultBoolean := CheckConfigFile(currentTest.input)
 
 			if resultConfig != currentTest.expectedConfig && resultBoolean != currentTest.expectedBoolean {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig.Port, resultBoolean, currentTest.expectedConfig.Port, currentTest.expectedBoolean) + " - FAIL")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %v %t Expected: %v %t", currentTest.input, resultConfig, resultBoolean, currentTest.expectedConfig, currentTest.expectedBoolean) + " - FAIL")
 			} else {
-				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %d %v Expected: %d %v", currentTest.input, resultConfig.Port, resultBoolean, currentTest.expectedConfig.Port, currentTest.expectedBoolean) + " - PASS")
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %v Got: %v %t Expected: %v %t", currentTest.input, resultConfig, resultBoolean, currentTest.expectedConfig, currentTest.expectedBoolean) + " - PASS")
 			}
 		})
 	}
