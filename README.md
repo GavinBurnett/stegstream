@@ -52,6 +52,11 @@ Stream the music without hiding the hidden file in it:
 
 StreamOnly=true
 
+Hide the hidden file in the music file without starting the web server:
+
+HideOnly=true
+
+
 Any lines in the configuration file that start with a # character will be ignored.
 
 See the release files for example configuration files.
