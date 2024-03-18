@@ -16,11 +16,7 @@ Setting up a server
 
 Open a command prompt, and cd into the directory containing the server executable.
 
-Enter the following:
-
-./stegstream-server <container file> <file to hide>
-
-Using the example files:
+Enter the following (Using the example files):
 
 ./stegstream-server Waves.mp3 HideFile.txt
 
