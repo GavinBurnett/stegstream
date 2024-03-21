@@ -62,7 +62,7 @@ const (
 Spacing: %v
 Steps: %v
 File name: %s`
-	UI_Help = `stegstream server v1.2 by gburnett@outlook.com
+	UI_Help = `stegstream server v1.3 by gburnett@outlook.com
 
 Arguments: 
 
