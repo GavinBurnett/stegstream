@@ -13,7 +13,7 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
 	var configDataValid bool = false
 	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
@@ -98,8 +98,20 @@ func main() {
 
 								// Web server started - listen for shutdown signal
 								fmt.Println(fmt.Sprintf(UI_WebServerStarted, Url))
+								if configData.WipeAudio == true {
+									fmt.Println(fmt.Sprintf(UI_WipeAudioWarning, os.Args[1]))
+								}
 								fmt.Println(UI_CtrlCToExit)
+
 								WaitForShutdown()
+
+								if configData.WipeAudio == true {
+									if WipeFile(os.Args[1]) == true {
+										fmt.Println(fmt.Sprintf(UI_WipedFile, os.Args[1]))
+									} else {
+										fmt.Println(fmt.Sprintf(UI_WipeFileError, os.Args[1]))
+									}
+								}
 
 							} else {
 								exitCode = 1

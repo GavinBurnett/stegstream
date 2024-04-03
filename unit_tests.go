@@ -147,27 +147,6 @@ func CreateEmptyFile(_fileName string) bool {
 	return fileCreated
 }
 
-// DeleteFile: Delete the given file
-func DeleteFile(_file string) bool {
-
-	var deleteError bool = false
-
-	if len(_file) > 0 {
-		err := os.Remove(_file)
-		if err != nil {
-			fmt.Println(UI_FileDeleteError, _file, err)
-			deleteError = true
-		} else {
-			// File deleted
-		}
-	} else {
-		fmt.Println(fmt.Sprintf(UI_ParameterInvalid, GetFunctionName()), "_file:"+_file)
-		deleteError = true
-	}
-
-	return deleteError
-}
-
 // GetRandomNumber: Gets a random number between given low and high values
 func GetRandomNumber(_low int64, _high int64) int64 {
 

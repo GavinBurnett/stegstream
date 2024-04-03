@@ -8,3 +8,6 @@ StreamOnly=false
 
 # Set to hide the file and not start the server
 HideOnly=false
+
+# Set to wipe audio file when server shuts down
+WipeAudio=false

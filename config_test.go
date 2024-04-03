@@ -8,7 +8,7 @@ import (
 func TestReadConfigFile(t *testing.T) {
 
 	// Set up test data
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
 
 	// The tests to run
 	var tests = []struct {
@@ -43,12 +43,14 @@ func TestReadConfigFile(t *testing.T) {
 func TestCheckConfigFile(t *testing.T) {
 
 	// Set up test data
-	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
-	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
-	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY}
-	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY}
-	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true}
-	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true}
+	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO}
+	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true, DEFAULT_WIPE_AUDIO}
+	var wipeAudioOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, true}
+	var wipeAudioHideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, true}
 
 	// The tests to run
 	var tests = []struct {
@@ -63,6 +65,8 @@ func TestCheckConfigFile(t *testing.T) {
 		{"streamOnlyOn", streamOnlyOn, streamOnlyOn, true},
 		{"hideOnlyOn", hideOnlyOn, hideOnlyOn, true},
 		{"streamOnlyHideOnlyBothOn", streamOnlyHideOnlyBothOn, streamOnlyHideOnlyBothOn, false},
+		{"wipeAudioOn", wipeAudioOn, wipeAudioOn, true},
+		{"wipeAudioHideOnlyOn", wipeAudioHideOnlyOn, wipeAudioHideOnlyOn, false},
 	}
 
 	// Write name of function being tested to test results file
