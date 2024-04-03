@@ -52,6 +52,10 @@ Hide the hidden file in the music file without starting the web server:
 
 HideOnly=true
 
+Wipe music file when server shuts down:
+
+WipeAudio=true
+
 
 Any lines in the configuration file that start with a # character will be ignored.
 
