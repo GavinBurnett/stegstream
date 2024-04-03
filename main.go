@@ -13,7 +13,7 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
 	var configDataValid bool = false
 	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
@@ -101,15 +101,27 @@ func main() {
 								if configData.WipeAudio == true {
 									fmt.Println(fmt.Sprintf(UI_WipeAudioWarning, os.Args[1]))
 								}
+								if configData.WipeHidden == true {
+									fmt.Println(fmt.Sprintf(UI_WipeHiddenWarning, os.Args[2]))
+								}
 								fmt.Println(UI_CtrlCToExit)
 
 								WaitForShutdown()
 
+								// Wipe audio and hidden files if set in config
 								if configData.WipeAudio == true {
 									if WipeFile(os.Args[1]) == true {
 										fmt.Println(fmt.Sprintf(UI_WipedFile, os.Args[1]))
 									} else {
 										fmt.Println(fmt.Sprintf(UI_WipeFileError, os.Args[1]))
+									}
+								}
+
+								if configData.WipeHidden == true {
+									if WipeFile(os.Args[2]) == true {
+										fmt.Println(fmt.Sprintf(UI_WipedFile, os.Args[2]))
+									} else {
+										fmt.Println(fmt.Sprintf(UI_WipeFileError, os.Args[2]))
 									}
 								}
 

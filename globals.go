@@ -10,6 +10,7 @@ const DEFAULT_PORT int = 8080
 const DEFAULT_STREAM_ONLY bool = false
 const DEFAULT_HIDE_ONLY bool = false
 const DEFAULT_WIPE_AUDIO bool = false
+const DEFAULT_WIPE_HIDDEN bool = false
 
 const DEBUG = false
 const UPDATE_UI = true

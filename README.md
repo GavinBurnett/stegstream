@@ -56,6 +56,10 @@ Wipe music file when server shuts down:
 
 WipeAudio=true
 
+Wipe hidden file when server shuts down:
+
+WipeHidden=true
+
 
 Any lines in the configuration file that start with a # character will be ignored.
 

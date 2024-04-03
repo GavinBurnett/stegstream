@@ -15,6 +15,7 @@ type Config struct {
 	StreamOnly bool // Stream with no hidden data
 	HideOnly   bool // Hide the file with no streaming server
 	WipeAudio  bool // Wipe audio file when server shuts down
+	WipeHidden bool // Wipe hidden file when server shuts down
 }
 
 // Config file strings
@@ -25,11 +26,12 @@ const PORT_CONFIG = "Port"
 const STREAM_ONLY_CONFIG = "StreamOnly"
 const HIDE_ONLY_CONFIG = "HideOnly"
 const WIPE_AUDIO_CONFIG = "WipeAudio"
+const WIPE_HIDDEN_CONFIG = "WipeHidden"
 
 // ReadConfigFile: Read config file data
 func ReadConfigFile(_configFile string) Config {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
 	var configFile *os.File
 	var configFileReader *bufio.Scanner
 	var err error
@@ -95,6 +97,11 @@ func ReadConfigFile(_configFile string) Config {
 									configData.WipeAudio = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
 								}
 
+								// Get wipe hidden file
+								if strings.Contains(configFileReader.Text(), WIPE_HIDDEN_CONFIG) {
+									configData.WipeHidden = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
+								}
+
 							}
 						}
 					} else {
@@ -147,7 +154,13 @@ func CheckConfigFile(_config Config) (Config, bool) {
 
 	// Check hide only and wipe audio are not both true
 	if _config.HideOnly == true && _config.WipeAudio == true {
-		fmt.Println(UI_StreamOnlyAndHideOnlySetError)
+		fmt.Println(UI_HideOnlyAndWipeAudioSetError)
+		configDataValid = false
+	}
+
+	// Check stream only and wipe hidden are not both true
+	if _config.StreamOnly == true && _config.WipeHidden == true {
+		fmt.Println(UI_StreamOnlyAndWipeHiddenSetError)
 		configDataValid = false
 	}
 

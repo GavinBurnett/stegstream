@@ -11,3 +11,6 @@ HideOnly=false
 
 # Set to wipe audio file when server shuts down
 WipeAudio=false
+
+# Set to wipe hidden file when server shuts down
+WipeHidden=false
