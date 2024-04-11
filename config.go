@@ -7,15 +7,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // Config file data
 type Config struct {
-	Port       int  // Port number
-	StreamOnly bool // Stream with no hidden data
-	HideOnly   bool // Hide the file with no streaming server
-	WipeAudio  bool // Wipe audio file when server shuts down
-	WipeHidden bool // Wipe hidden file when server shuts down
+	Port         int       // Port number
+	StreamOnly   bool      // Stream with no hidden data
+	HideOnly     bool      // Hide the file with no streaming server
+	WipeAudio    bool      // Wipe audio file when server shuts down
+	WipeHidden   bool      // Wipe hidden file when server shuts down
+	AutoShutdown time.Time // Date and time to automatically shut down server
 }
 
 // Config file strings
@@ -27,11 +29,12 @@ const STREAM_ONLY_CONFIG = "StreamOnly"
 const HIDE_ONLY_CONFIG = "HideOnly"
 const WIPE_AUDIO_CONFIG = "WipeAudio"
 const WIPE_HIDDEN_CONFIG = "WipeHidden"
+const AUTO_SHUTDOWN_CONFIG = "AutoShutdown"
 
 // ReadConfigFile: Read config file data
 func ReadConfigFile(_configFile string) Config {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
 	var configFile *os.File
 	var configFileReader *bufio.Scanner
 	var err error
@@ -102,6 +105,11 @@ func ReadConfigFile(_configFile string) Config {
 									configData.WipeHidden = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
 								}
 
+								// Get automatically shut down server date and time
+								if strings.Contains(configFileReader.Text(), AUTO_SHUTDOWN_CONFIG) {
+									configData.AutoShutdown = ParseStringToDateTime(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
+								}
+
 							}
 						}
 					} else {
@@ -144,6 +152,16 @@ func CheckConfigFile(_config Config) (Config, bool) {
 		_config.Port = DEFAULT_PORT
 	}
 
+	// Check for auto shutdown date that is in the past
+	if _config.AutoShutdown != (time.Time{}) {
+		if _config.AutoShutdown.Before(time.Now().Local()) {
+			fmt.Println(UI_AutoShutdownTimeInPast)
+			_config.AutoShutdown = time.Time{}
+		}
+	}
+
+	// Unit tests
+
 	// Checks for entries that contradict each other - display any errors
 
 	// Check stream only and hide only are not both true
@@ -161,6 +179,12 @@ func CheckConfigFile(_config Config) (Config, bool) {
 	// Check stream only and wipe hidden are not both true
 	if _config.StreamOnly == true && _config.WipeHidden == true {
 		fmt.Println(UI_StreamOnlyAndWipeHiddenSetError)
+		configDataValid = false
+	}
+
+	// Check auto shutdown and hide only are not both true
+	if _config.AutoShutdown != (time.Time{}) && _config.HideOnly == true {
+		fmt.Println(UI_AutoShutdownAndHideOnlySetError)
 		configDataValid = false
 	}
 
@@ -231,4 +255,37 @@ func ParseStringToBool(_inputString string) bool {
 	}
 
 	return parsedBool
+}
+
+// ParseStringToDateTime: Converts given string into a date time
+func ParseStringToDateTime(_inputString string) time.Time {
+
+	const format string = "02/01/2006 15:04"
+
+	var loc *time.Location
+	var dateTime time.Time
+	var parseErr error
+
+	if len(_inputString) > 0 {
+
+		loc, parseErr = time.LoadLocation("Local")
+
+		if parseErr != nil {
+			fmt.Println(UI_LocaleNotFound)
+			fmt.Println(UI_UsingDefault, dateTime)
+		} else {
+
+			dateTime, parseErr = time.ParseInLocation(format, _inputString, loc)
+
+			if parseErr != nil {
+				fmt.Println(UI_ParseError, _inputString)
+				fmt.Println(UI_UsingDefault, dateTime)
+			}
+		}
+	} else {
+		fmt.Println(UI_ParseError, GetFunctionName(), _inputString)
+		fmt.Println(UI_UsingDefault, dateTime)
+	}
+
+	return dateTime
 }

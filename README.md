@@ -60,6 +60,12 @@ Wipe hidden file when server shuts down:
 
 WipeHidden=true
 
+Set a date and time to automatically shut down the server:
+Format: dd/mm/yyyy hh:ss
+24 Hour clock
+
+AutoShutdown=11/04/2024 12:02
+
 
 Any lines in the configuration file that start with a # character will be ignored.
 

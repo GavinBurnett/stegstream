@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestReadConfigFile(t *testing.T) {
 
 	// Set up test data
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
 
 	// The tests to run
 	var tests = []struct {
@@ -43,16 +44,16 @@ func TestReadConfigFile(t *testing.T) {
 func TestCheckConfigFile(t *testing.T) {
 
 	// Set up test data
-	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
-	var wipeAudioOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, true, DEFAULT_WIPE_HIDDEN}
-	var wipeAudioHideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, true, DEFAULT_WIPE_HIDDEN}
-	var wipeHiddenOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true}
-	var wipeHiddenStreamOnlyBothOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true}
+	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var wipeAudioOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var wipeAudioHideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var wipeHiddenOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN}
+	var wipeHiddenStreamOnlyBothOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN}
 
 	// The tests to run
 	var tests = []struct {
@@ -163,6 +164,48 @@ func TestParseStringToBool(t *testing.T) {
 				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %t Expected: %t", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
 			} else {
 				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %t Expected: %t", currentTest.input, result, currentTest.expectedResult) + " - PASS")
+			}
+		})
+	}
+}
+
+func TestParseStringToDateTime(t *testing.T) {
+
+	// The tests to run
+	var tests = []struct {
+		name           string
+		input          string
+		expectedResult time.Time
+	}{
+		{"NoParameterData", "", time.Time{}},
+		{"InvalidData1", "invalidData", time.Time{}},
+		{"InvalidData2", "34e", time.Time{}},
+		{"ValidDateTime1", "10/04/2024 11:00", time.Date(2024, 04, 10, 11, 00, 00, 00, time.Local)},
+		{"ValidDateTime2", "01/12/2024 11:00", time.Date(2024, 12, 01, 11, 00, 00, 00, time.Local)},
+		{"ValidDateTime2", "01/12/2024 23:00", time.Date(2024, 12, 01, 23, 00, 00, 00, time.Local)},
+		{"InvalidDateTime1", "50/12/2024 11:00", time.Time{}},
+		{"InvalidDateTime2", "01/50/2024 11:00", time.Time{}},
+		{"InvalidDateTime3", "01/12/99686 11:00", time.Time{}},
+		{"InvalidDateTime4", "01/12/2024 25:00", time.Time{}},
+		{"InvalidDateTime5", "01/12/2024 11:61", time.Time{}},
+		{"InvalidDateTime6", "01-12-2024 11:00", time.Time{}},
+		{"InvalidDateTime6", "01/12/2024 11-00", time.Time{}},
+	}
+
+	// Write name of function being tested to test results file
+	LogResult("ParseStringToDateTime")
+
+	// Run the tests
+	for _, currentTest := range tests {
+		testname := fmt.Sprintf("%s", currentTest.name)
+		t.Run(testname, func(t *testing.T) {
+
+			result := ParseStringToDateTime(currentTest.input)
+
+			if result != currentTest.expectedResult {
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %s Expected: %s", currentTest.input, result, currentTest.expectedResult) + " - FAIL")
+			} else {
+				LogResult(currentTest.name + " - " + fmt.Sprintf("Input: %s Got: %s Expected: %s", currentTest.input, result, currentTest.expectedResult) + " - PASS")
 			}
 		})
 	}

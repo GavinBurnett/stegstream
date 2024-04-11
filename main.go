@@ -13,7 +13,7 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
 	var configDataValid bool = false
 	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
@@ -104,9 +104,12 @@ func main() {
 								if configData.WipeHidden == true {
 									fmt.Println(fmt.Sprintf(UI_WipeHiddenWarning, os.Args[2]))
 								}
+								if configData.AutoShutdown != (time.Time{}) {
+									fmt.Println(UI_AutoShutdownTime, configData.AutoShutdown)
+								}
 								fmt.Println(UI_CtrlCToExit)
 
-								WaitForShutdown()
+								WaitForShutdown(configData.AutoShutdown)
 
 								// Wipe audio and hidden files if set in config
 								if configData.WipeAudio == true {
@@ -157,8 +160,8 @@ func main() {
 	os.Exit(exitCode)
 }
 
-// WaitForShutdown: Waits for CTRL+C or external process kill command
-func WaitForShutdown() {
+// WaitForShutdown: Waits for CTRL+C or external process kill command or auto shutdown time
+func WaitForShutdown(_autoShutdownTime time.Time) {
 
 	var shutdown bool = false
 	var killChannel chan (os.Signal)
@@ -175,19 +178,56 @@ func WaitForShutdown() {
 	go func() {
 		<-killChannel
 		shutdown = true
-		fmt.Println(UI_ShuttingDown)
+		fmt.Println(UI_ShutdownSignal)
 	}()
 
-	// Loop until shutdown flag set
+	// Loop until shutdown flag set or auto shutdown time reached
 	for {
 		time.Sleep(10 * time.Second)
-		if shutdown == true {
-			if DEBUG == true {
-				fmt.Println(UI_ShutdownSignal)
+		if shutdown == true || AutoShutdown(_autoShutdownTime) == true {
+
+			// if shutdown == true {
+			// 	fmt.Println(UI_ShutdownSignal)
+			// }
+
+			if AutoShutdown(_autoShutdownTime) == true {
+				fmt.Println(UI_AutoShutdown)
 			}
+
 			break
 		}
 	} // end for loop
+}
+
+// AutoShutdown: Returns true if auto shutdown time has been reached
+func AutoShutdown(_autoShutdownTime time.Time) bool {
+
+	var autoShutdownReached bool = false
+	var currentTime time.Time
+
+	if DEBUG == true {
+		fmt.Println(UI_AutoShutdownTime, _autoShutdownTime)
+	}
+
+	if _autoShutdownTime.IsZero() {
+		autoShutdownReached = false
+	} else {
+		currentTime = time.Now().Local()
+
+		if DEBUG == true {
+			fmt.Println(UI_CurrentTime, currentTime)
+		}
+
+		if _autoShutdownTime.After(currentTime) {
+			autoShutdownReached = false
+		} else {
+			autoShutdownReached = true
+		}
+
+	}
+
+	return autoShutdownReached
+
 }
 
 // IsStringHelpArgument: Returns true if given string is a help argument, false if it is not

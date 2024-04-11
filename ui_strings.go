@@ -31,7 +31,9 @@ const (
 	UI_StreamOnlyAndHideOnlySetError   = `ERROR: Config file StreamOnly and HideOnly both enabled`
 	UI_HideOnlyAndWipeAudioSetError    = `ERROR: Config file HideOnly and WipeAudio both enabled`
 	UI_StreamOnlyAndWipeHiddenSetError = `ERROR: Config file StreamOnly and WipeHidden both enabled`
+	UI_AutoShutdownAndHideOnlySetError = `ERROR: Config file AutoShutdown and HideOnly both enabled`
 	UI_WipeFileError                   = `ERROR: Failed to wipe file: %s`
+	UI_LocaleNotFound                  = `ERROR: Locale not found`
 	UI_UsingDefault                    = `Using default setting: `
 	UI_ConfigFileFound                 = `Config file found - using settings`
 	UI_ReadingConfigFile               = `Reading config file: `
@@ -58,7 +60,7 @@ const (
 	UI_HiddenDataWrittenOK             = `Hidden file: %s written into container file: %s successfully`
 	UI_SkippingLine                    = ` Skipping Line: `
 	UI_WaitingForShutdown              = `Waiting for shutdown`
-	UI_ShutdownSignal                  = `Shutdown signal detected`
+	UI_ShutdownSignal                  = `Shutdown signal detected - shutting down`
 	UI_ShuttingDown                    = `Shutting down`
 	UI_CtrlCToExit                     = `Press CTRL+C or kill stegstream-server process to exit`
 	UI_WipeAudioWarning                = `WARNING: Container file: %s will be wiped on server shutdown`
@@ -68,6 +70,10 @@ const (
 	UI_WipedFile                       = `Wiped file: %s`
 	UI_BufferSize                      = `Buffer size: %v`
 	UI_DataWriteComplete               = `Data write complete`
+	UI_AutoShutdown                    = `Auto shutdown time reached - shutting down`
+	UI_AutoShutdownTime                = `Auto shutdown time: `
+	UI_AutoShutdownTimeInPast          = `Config Entry: AutoShutdown has a date in the past - disabling AutoShutdown`
+	UI_CurrentTime                     = `Current time: `
 	UI_HiddenFileData                  = `Hidden file data:
 Spacing: %v
 Steps: %v
