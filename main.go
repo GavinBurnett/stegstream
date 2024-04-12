@@ -13,7 +13,7 @@ import (
 // Main: program entry point
 func main() {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
 	var configDataValid bool = false
 	var stegOK bool = false
 	var waitWebServer sync.WaitGroup
@@ -82,6 +82,15 @@ func main() {
 
 				// If file to hide has been hidden ok, or stream only setting is true
 				if stegOK == true || configData.StreamOnly == true {
+
+					// Wipe hidden file after hiding in audio file if set in config
+					if configData.WipeAfterHide == true {
+						if WipeFile(os.Args[2]) == true {
+							fmt.Println(fmt.Sprintf(UI_WipedFile, os.Args[2]))
+						} else {
+							fmt.Println(fmt.Sprintf(UI_WipeFileError, os.Args[2]))
+						}
+					}
 
 					// Start web server if hide file only is false
 					if configData.HideOnly == false {

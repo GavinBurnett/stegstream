@@ -19,3 +19,6 @@ WipeHidden=false
 # Format: dd/mm/yyyy hh:ss
 # 24 Hour clock
 #AutoShutdown=11/04/2024 12:02
+
+# Set to wipe hidden file after hiding it in audio file
+WipeAfterHide=false

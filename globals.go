@@ -15,6 +15,7 @@ const DEFAULT_STREAM_ONLY bool = false
 const DEFAULT_HIDE_ONLY bool = false
 const DEFAULT_WIPE_AUDIO bool = false
 const DEFAULT_WIPE_HIDDEN bool = false
+const DEFAULT_WIPE_AFTER_HIDE = false
 
 var DEFAULT_AUTO_SHUTDOWN time.Time = time.Time{}
 

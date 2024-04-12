@@ -9,7 +9,7 @@ import (
 func TestReadConfigFile(t *testing.T) {
 
 	// Set up test data
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
 
 	// The tests to run
 	var tests = []struct {
@@ -44,16 +44,21 @@ func TestReadConfigFile(t *testing.T) {
 func TestCheckConfigFile(t *testing.T) {
 
 	// Set up test data
-	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var wipeAudioOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var wipeAudioHideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
-	var wipeHiddenOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN}
-	var wipeHiddenStreamOnlyBothOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN}
+	var defaultData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var portChanged Config = Config{8181, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var invalidPort Config = Config{-1, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var streamOnlyOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var hideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var streamOnlyHideOnlyBothOn Config = Config{DEFAULT_PORT, true, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var wipeAudioOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var wipeAudioHideOnlyOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, true, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var wipeHiddenOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var wipeHiddenStreamOnlyBothOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
+	var autoShutdownHideOnlybothOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, true}
+
+	var wipeAfterHideWipeHiddenBothOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, true, DEFAULT_AUTO_SHUTDOWN, true}
+	var wipeAfterHideHideOnlyBothOn Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, true, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, true}
+	var wipeAfterHideStreamOnlyBothOn Config = Config{DEFAULT_PORT, true, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, true}
 
 	// The tests to run
 	var tests = []struct {
@@ -72,6 +77,10 @@ func TestCheckConfigFile(t *testing.T) {
 		{"wipeAudioHideOnlyOn", wipeAudioHideOnlyOn, wipeAudioHideOnlyOn, false},
 		{"wipeHiddenOn", wipeHiddenOn, wipeHiddenOn, true},
 		{"wipeHiddenStreamOnlyBothOn", wipeHiddenStreamOnlyBothOn, wipeHiddenStreamOnlyBothOn, false},
+		{"autoShutdownHideOnlyBothOn", autoShutdownHideOnlybothOn, autoShutdownHideOnlybothOn, false},
+		{"wipeAfterHideWipeHiddenBothOn", wipeAfterHideWipeHiddenBothOn, wipeAfterHideWipeHiddenBothOn, false},
+		{"wipeAfterHideHideOnlyBothOn", wipeAfterHideHideOnlyBothOn, wipeAfterHideHideOnlyBothOn, false},
+		{"wipeAfterHideStreamOnlyBothOn", wipeAfterHideStreamOnlyBothOn, wipeAfterHideStreamOnlyBothOn, false},
 	}
 
 	// Write name of function being tested to test results file

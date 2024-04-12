@@ -12,12 +12,13 @@ import (
 
 // Config file data
 type Config struct {
-	Port         int       // Port number
-	StreamOnly   bool      // Stream with no hidden data
-	HideOnly     bool      // Hide the file with no streaming server
-	WipeAudio    bool      // Wipe audio file when server shuts down
-	WipeHidden   bool      // Wipe hidden file when server shuts down
-	AutoShutdown time.Time // Date and time to automatically shut down server
+	Port          int       // Port number
+	StreamOnly    bool      // Stream with no hidden data
+	HideOnly      bool      // Hide the file with no streaming server
+	WipeAudio     bool      // Wipe audio file when server shuts down
+	WipeHidden    bool      // Wipe hidden file when server shuts down
+	AutoShutdown  time.Time // Date and time to automatically shut down server
+	WipeAfterHide bool      // Wipe hidden file after hiding it in audio file
 }
 
 // Config file strings
@@ -30,11 +31,12 @@ const HIDE_ONLY_CONFIG = "HideOnly"
 const WIPE_AUDIO_CONFIG = "WipeAudio"
 const WIPE_HIDDEN_CONFIG = "WipeHidden"
 const AUTO_SHUTDOWN_CONFIG = "AutoShutdown"
+const WIPE_AFTER_HIDE_CONFIG = "WipeAfterHide"
 
 // ReadConfigFile: Read config file data
 func ReadConfigFile(_configFile string) Config {
 
-	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN}
+	var configData Config = Config{DEFAULT_PORT, DEFAULT_STREAM_ONLY, DEFAULT_HIDE_ONLY, DEFAULT_WIPE_AUDIO, DEFAULT_WIPE_HIDDEN, DEFAULT_AUTO_SHUTDOWN, DEFAULT_WIPE_AFTER_HIDE}
 	var configFile *os.File
 	var configFileReader *bufio.Scanner
 	var err error
@@ -110,6 +112,11 @@ func ReadConfigFile(_configFile string) Config {
 									configData.AutoShutdown = ParseStringToDateTime(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
 								}
 
+								// Get wipe hidden file after hiding it in audio file
+								if strings.Contains(configFileReader.Text(), WIPE_AFTER_HIDE_CONFIG) {
+									configData.WipeAfterHide = ParseStringToBool(strings.Split(configFileReader.Text(), LINE_CONFIG_ENTRY)[1])
+								}
+
 							}
 						}
 					} else {
@@ -160,8 +167,6 @@ func CheckConfigFile(_config Config) (Config, bool) {
 		}
 	}
 
-	// Unit tests
-
 	// Checks for entries that contradict each other - display any errors
 
 	// Check stream only and hide only are not both true
@@ -185,6 +190,24 @@ func CheckConfigFile(_config Config) (Config, bool) {
 	// Check auto shutdown and hide only are not both true
 	if _config.AutoShutdown != (time.Time{}) && _config.HideOnly == true {
 		fmt.Println(UI_AutoShutdownAndHideOnlySetError)
+		configDataValid = false
+	}
+
+	// Check wipe hidden file after hide and wipe hidden are not both true
+	if _config.WipeAfterHide == true && _config.WipeHidden == true {
+		fmt.Println(UI_WipeAfterHideAndWipeHiddenSetError)
+		configDataValid = false
+	}
+
+	// Check wipe hidden file after hide and hide only are not both true
+	if _config.WipeAfterHide == true && _config.HideOnly == true {
+		fmt.Println(UI_WipeAfterHideAndHideOnlySetError)
+		configDataValid = false
+	}
+
+	// Check wipe hidden file after hide and stream only are not both true
+	if _config.WipeAfterHide == true && _config.StreamOnly == true {
+		fmt.Println(UI_WipeAfterHideAndStreamOnlySetError)
 		configDataValid = false
 	}
 

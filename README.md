@@ -68,6 +68,10 @@ Format: dd/mm/yyyy hh:ss
 
 AutoShutdown=11/04/2024 12:02
 
+Set to wipe hidden file after hiding the file in the music file:
+
+WipeHiddenAfterHide=false
+
 
 Any lines in the configuration file that start with a # character will be ignored.
 
