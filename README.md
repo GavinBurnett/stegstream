@@ -24,13 +24,13 @@ This will hide the file HideFile.txt in the music file Waves.mp3
 
 The server URL that Waves.mp3 will now be streamed on will be displayed. Open this URL in a web browser to listen to this music file - note that the stream is http based, so any browser warnings about lack of https security can be ignored. The client program will need to be given this URL to extract the hidden file.
 
-Press CTRL+C or kill the stegstream-server process to stop streaming.
+Press CTRL+C or kill the stegstream-server process to stop streaming. The server can also be set to shut down at a given time and date by setting the AutoShutdown entry in the configuration file.
 
 Things to consider
 
-The hidden file is stored in the music file as plaintext. If additional security is required, it is recommended to encrypt the hidden file before hiding it in the music file.
+The hidden file is stored in the music file as plaintext. If additional security is required, it is recommended to encrypt the hidden file before hiding it in the music file.  The GNU Privacy Guard (GnuPG) is the recommended encryption application: https://gnupg.org/index.html
 
-The hidden and music files are left on disk after the server program has shut down. It is the responsibility of the user to delete these files if secrecy is important.
+The hidden and music files are left on disk after the server program has shut down. It is the responsibility of the user to delete these files if secrecy is important. The files can be securely deleted when the server shuts down by setting the WipeAudio and WipeHidden entries in the configuration file. It is also possible to securely delete the hidden file after it has been hidden in the music file by setting the WipeAfterHide entry in the configuration file.
 
 The larger the hidden file in relation to the music file, the more audible distortions will be noticed on streaming playback. The limit for a hidden file is 10% of the size of the music file, as this limit keeps the distortions to an acceptable level. If the hidden file is large, a large music file will be needed.
 
