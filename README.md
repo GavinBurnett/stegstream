@@ -70,7 +70,7 @@ AutoShutdown=11/04/2024 12:02
 
 Set to wipe hidden file after hiding the file in the music file:
 
-WipeAfterHide=false
+WipeAfterHide=true
 
 
 Any lines in the configuration file that start with a # character will be ignored.
