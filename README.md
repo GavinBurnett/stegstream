@@ -28,7 +28,12 @@ Press CTRL+C or kill the stegstream-server process to stop streaming. The server
 
 Things to consider
 
-The hidden file is stored in the music file as plaintext. If additional security is required, it is recommended to encrypt the hidden file before hiding it in the music file.  The GNU Privacy Guard (GnuPG) is the recommended encryption application: https://gnupg.org/index.html
+The hidden file is stored in the music file as plaintext. If additional security is required, it is recommended to encrypt the hidden file before hiding it in the music file.
+
+Recommended encryption applications are:
+
+The GNU Privacy Guard (GnuPG): https://gnupg.org/index.html
+VeraCrypt: https://www.veracrypt.fr/en/Home.html
 
 The hidden and music files are left on disk after the server program has shut down. It is the responsibility of the user to delete these files if secrecy is important. The files can be securely deleted when the server shuts down by setting the WipeAudio and WipeHidden entries in the configuration file. It is also possible to securely delete the hidden file after it has been hidden in the music file by setting the WipeAfterHide entry in the configuration file.
 
